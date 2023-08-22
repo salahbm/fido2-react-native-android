@@ -1,22 +1,10 @@
-import React, {useState} from 'react';
-import {
-  NativeModules,
-  Button,
-  Alert,
-  View,
-  SafeAreaView,
-  Text,
-  TextInput,
-} from 'react-native';
+import React from 'react';
+import {NativeModules, Button, Alert, SafeAreaView} from 'react-native';
 
-const {TrustKeyApiBridge, FidoModule} = NativeModules;
+const {TrustKeyApiBridge} = NativeModules;
 
 const FidoModuleButton = () => {
-  const [name, setName] = useState('second');
   const InitFidoDevice = async () => {
-    console.log('Trust Key API Bridge initializing!!!');
-    // const event = await FidoModule.createFidoEvent('testName', 'testLocation');
-    // Alert.alert(event);
     try {
       const initializedDevice = await TrustKeyApiBridge.initFidoDevice(
         'testName',
@@ -41,55 +29,49 @@ const FidoModuleButton = () => {
         console.log(res);
       })
       .catch((err: string) => {
-        console.log(err);
+        console.error(err);
       });
   };
   const onDisconnect = async () => {
     TrustKeyApiBridge.disconnect()
       .then((res: any) => {
         Alert.alert('Success', res);
+        console.log('Success', res);
       })
       .catch((err: any) => {
+        Alert.alert('Error', err);
         console.log('Error', err);
       });
-    console.log('Trust Key API Bridge disconnect!!');
   };
 
   return (
-    <SafeAreaView>
-      <View
-        style={{
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexDirection: 'row',
-          padding: 10,
-          gap: 10,
-        }}>
-        <Button
-          title="Device Initialize Testing"
-          color="#841584"
-          onPress={InitFidoDevice}
-        />
+    <SafeAreaView style={{margin: 10, gap: 10}}>
+      <Button
+        title="Device Initialize Testing"
+        color="green"
+        onPress={InitFidoDevice}
+      />
+      <Button
+        title="Device Disconnect Testing"
+        color="red"
+        onPress={onDisconnect}
+      />
 
-        <Button
-          title="Device Disconnect Testing"
-          color="#841584"
-          onPress={onDisconnect}
-        />
-      </View>
-      <Button title="Device Handle" color="#841584" onPress={DeviceHandle} />
-
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Text style={{fontSize: 24, marginBottom: 20}}>User Display Name</Text>
-        <TextInput
-          style={{fontSize: 24, marginBottom: 20}}
-          value={name}
-          onChangeText={val => setName(val)}
-        />
-        <Button title="Device Handle" color="#841584" onPress={DeviceHandle} />
-      </View>
+      <Button title="Create Credential" color="blue" onPress={DeviceHandle} />
     </SafeAreaView>
   );
 };
 
 export default FidoModuleButton;
+const styles = {
+  button: {
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+};

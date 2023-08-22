@@ -197,8 +197,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
 
     @ReactMethod
     fun initFidoDevice(name: String, location: String) {
-        Log.d( "Init called with: $name")
-
+        Log.d("FidoModule", "Init called with: $name")
         try {
             initFidoLibrary()
         } catch (npe : NullPointerException) {
@@ -234,7 +233,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
     fun makeCredentialCTAPLog() {
         makeCredential_CTAP_Log()
     }
-@ReactMethod
+    @ReactMethod
     fun initSetting () {
         Log.d(TAG, "Init Setting...")
         m_environment_rpID = m_environment_rpID_URL.substringAfter("//")
@@ -265,7 +264,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
             promise.reject("E401", "m_connection has not been initialized")
         }
     }
-@ReactMethod
+    @ReactMethod
     fun makeCredential_CTAP_Log()
     {
         Log.d("trustkey", "[Credential Attestation] dwVersion = " + m_webAuthNCredentialAttestation.m_dwVersion.toString())
@@ -312,7 +311,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
         Log.d("trustkey", " ")
         Log.d("trustkey", "[Credential Attestation] cbCredentialId = " + m_webAuthNCredentialAttestation.m_dwUsedTransport.toString())
     }
-@ReactMethod
+
     fun auth_CTAP_Log()
     {
         /* 아래의 로그들은 결과값의 로그를 나타 냅니다 */
@@ -372,7 +371,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
             byteArrayOf(0x00), 0, m_webAuthNCommonAttestation, 0, byteArrayOf(0x00),0,
             byteArrayOf(0x00),  WebAuthNExtensions(0, WebAuthNExtension(null, 0, byteArrayOf(0x00))) ,0)
     }
-@ReactMethod
+
     fun BytesToHex(bytes: ByteArray): String {
 
         val hexArray = "0123456789ABCDEF".toCharArray()
@@ -441,7 +440,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
             idx++
         }
     }
-@ReactMethod
+
     fun app_hid_write(writeData: ByteArray, writeLength: Int ) : Int
     {
         /* writeLength 는 현재 사용되지 않습니다 */
@@ -474,7 +473,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
 
         return sent
     }
-@ReactMethod
+
     fun app_hid_read_timeout(readData: ByteArray, readLength: Int, milliseconds: Int) : Int
     {
         /* milliseconds 는 현재 사용되지 않습니다
