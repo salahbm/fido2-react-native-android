@@ -1,13 +1,22 @@
-import React from 'react';
-import {NativeModules, Button, Alert, View, SafeAreaView} from 'react-native';
+import React, {useState} from 'react';
+import {
+  NativeModules,
+  Button,
+  Alert,
+  View,
+  SafeAreaView,
+  Text,
+  TextInput,
+} from 'react-native';
 
 const {TrustKeyApiBridge, FidoModule} = NativeModules;
 
 const FidoModuleButton = () => {
+  const [name, setName] = useState('second');
   const InitFidoDevice = async () => {
     console.log('Trust Key API Bridge initializing!!!');
-    const event = await FidoModule.createFidoEvent('testName', 'testLocation');
-    console.log(event);
+    // const event = await FidoModule.createFidoEvent('testName', 'testLocation');
+    // Alert.alert(event);
     try {
       const initializedDevice = await TrustKeyApiBridge.initFidoDevice(
         'testName',
@@ -69,6 +78,16 @@ const FidoModuleButton = () => {
         />
       </View>
       <Button title="Device Handle" color="#841584" onPress={DeviceHandle} />
+
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text style={{fontSize: 24, marginBottom: 20}}>User Display Name</Text>
+        <TextInput
+          style={{fontSize: 24, marginBottom: 20}}
+          value={name}
+          onChangeText={val => setName(val)}
+        />
+        <Button title="Device Handle" color="#841584" onPress={DeviceHandle} />
+      </View>
     </SafeAreaView>
   );
 };

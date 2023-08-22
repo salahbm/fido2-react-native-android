@@ -197,7 +197,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
 
     @ReactMethod
     fun initFidoDevice(name: String, location: String) {
-        Log.d("FidoModule", "Init Trust Key event called with name: $name")
+        Log.d( "Init called with: $name")
 
         try {
             initFidoLibrary()

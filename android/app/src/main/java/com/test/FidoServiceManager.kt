@@ -12,6 +12,6 @@ class FidoServiceManager(reactContext: ReactApplicationContext) : ReactContextBa
 
 
     @ReactMethod fun createFidoEvent(name: String, location: String) {
-        Log.d("FidoModule", "Create event called with name: $name and location: $location")
+        Log.d("FidoModule", "Event called with $name & $location")
     }
 }
