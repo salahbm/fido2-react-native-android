@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+</PreferenceScreen>-->
+<resources>
+    <!--<usb-device vendor-id = "12575" product-id = "18986" />-->
+    <usb-device  vendor-id = "12575" product-id = "62588" />
+    <!--<usb-device vendor-id = "1155" product-id = "41674" />-->
+    <!--<usb-device vendor-id = "2414" product-id = "2141" /> -->
+-</resources>
