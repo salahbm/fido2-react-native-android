@@ -1,20 +1,13 @@
 import React from 'react';
 import {NativeModules, Button, Alert, SafeAreaView} from 'react-native';
 
-const {TrustKeyApiBridge} = NativeModules;
+const {TrustKeyApiBridge, FidoTrustkeyBridge} = NativeModules;
 
 const FidoModuleButton = () => {
-  const InitFidoDevice = async () => {
+  const InitilizeFidoDevice = async () => {
     try {
-      const initializedDevice = await TrustKeyApiBridge.initFidoDevice(
-        'testName',
-        'testLocation',
-      );
-      if (initializedDevice) {
-        Alert.alert('Trust Key API Bridge initialized!!!', initializedDevice);
-      } else {
-        Alert.alert('Didnt work', initializedDevice);
-      }
+      await TrustKeyApiBridge.initFidoDevice('testName', 'testLocation');
+      Alert.alert('Success');
     } catch (error) {
       console.error('Error initializing Trust Key API Bridge:', error);
       Alert.alert(
@@ -24,24 +17,26 @@ const FidoModuleButton = () => {
     }
   };
   const DeviceHandle = () => {
-    TrustKeyApiBridge.getTKAuthN_GetDeviceHandle()
-      .then((res: any) => {
-        console.log(res);
-      })
-      .catch((err: string) => {
-        console.error(err);
-      });
+    FidoTrustkeyBridge.preMakeCredential('user123');
+    FidoTrustkeyBridge.preGetAssertion('user456');
+  };
+  const Register = async () => {
+    try {
+      const credential = await TrustKeyApiBridge.makeCredentialCTAPLog();
+      Alert.alert('success', credential);
+    } catch (error) {
+      Alert.alert('error');
+      console.error(error);
+    }
   };
   const onDisconnect = async () => {
-    TrustKeyApiBridge.disconnect()
-      .then((res: any) => {
-        Alert.alert('Success', res);
-        console.log('Success', res);
-      })
-      .catch((err: any) => {
-        Alert.alert('Error', err);
-        console.log('Error', err);
-      });
+    try {
+      const exit = await TrustKeyApiBridge.disconnect();
+      Alert.alert('success', exit);
+    } catch (error) {
+      Alert.alert('error');
+      console.error(error);
+    }
   };
 
   return (
@@ -49,7 +44,7 @@ const FidoModuleButton = () => {
       <Button
         title="Device Initialize Testing"
         color="green"
-        onPress={InitFidoDevice}
+        onPress={InitilizeFidoDevice}
       />
       <Button
         title="Device Disconnect Testing"
@@ -57,7 +52,8 @@ const FidoModuleButton = () => {
         onPress={onDisconnect}
       />
 
-      <Button title="Create Credential" color="blue" onPress={DeviceHandle} />
+      <Button title="Device Handle" color="blue" onPress={DeviceHandle} />
+      <Button title="Register" color="brown" onPress={Register} />
     </SafeAreaView>
   );
 };

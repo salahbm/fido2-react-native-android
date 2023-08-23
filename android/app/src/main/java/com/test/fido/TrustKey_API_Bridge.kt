@@ -233,7 +233,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
     fun makeCredentialCTAPLog() {
         makeCredential_CTAP_Log()
     }
-    @ReactMethod
+
     fun initSetting () {
         Log.d(TAG, "Init Setting...")
         m_environment_rpID = m_environment_rpID_URL.substringAfter("//")
@@ -264,7 +264,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
             promise.reject("E401", "m_connection has not been initialized")
         }
     }
-    @ReactMethod
+
     fun makeCredential_CTAP_Log()
     {
         Log.d("trustkey", "[Credential Attestation] dwVersion = " + m_webAuthNCredentialAttestation.m_dwVersion.toString())
@@ -390,7 +390,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
     }
 
     /* 이 함수에서 실제적으로 각종 하드웨어 정보를 얻어 옵니다 */
-    @ReactMethod
+
     fun app_hid_enumerate(vendor_id: Int, product_id: Int)
     {
         val deviceIterator: Iterator<UsbDevice> = m_deviceList.values.iterator()
