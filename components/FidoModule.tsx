@@ -46,13 +46,13 @@ const FidoModuleButton = () => {
         color="green"
         onPress={InitilizeFidoDevice}
       />
-      <Button
+      {/* <Button
         title="Device Disconnect Testing"
         color="red"
         onPress={onDisconnect}
-      />
+      /> */}
 
-      <Button title="Device Handle" color="blue" onPress={DeviceHandle} />
+      {/* <Button title="Device Handle" color="blue" onPress={DeviceHandle} /> */}
       <Button title="Register" color="brown" onPress={Register} />
     </SafeAreaView>
   );

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Button,
@@ -6,6 +6,7 @@ import {
   TextInput,
   NativeModules,
   Text,
+  DeviceEventEmitter,
 } from 'react-native';
 
 const RegisterCredentialScreen = () => {
@@ -13,13 +14,32 @@ const RegisterCredentialScreen = () => {
 
   const [registerResult, setRegisterResult] = useState('');
   const [name, setName] = useState('');
+  const generateUniqueString = (length: number) => {
+    const characters =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
 
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      result += characters.charAt(randomIndex);
+    }
+
+    return result;
+  };
+
+  useEffect(() => {
+    DeviceEventEmitter.addListener('MakeCredentialResult', event => {
+      if (event.status === 'success') {
+        console.log('Make credential success');
+      } else {
+        console.log('Make credential failed');
+      }
+    });
+  }, []);
   const registerCredential = async () => {
-    const challenge = new Uint8Array([]);
+    const challenge = generateUniqueString(64);
     const user = {
-      id: new Uint8Array([
-        /* your user ID bytes here */
-      ]),
+      id: generateUniqueString(16),
       name: 'user@example.com',
       displayName: name,
     };
@@ -28,7 +48,17 @@ const RegisterCredentialScreen = () => {
     };
     const pubKeyCredParams = [
       {type: 'public-key', alg: -7},
+      {type: 'public-key', alg: -35},
+      {type: 'public-key', alg: -36},
       {type: 'public-key', alg: -257},
+      {type: 'public-key', alg: -258},
+      {type: 'public-key', alg: -259},
+      {type: 'public-key', alg: -37},
+      {type: 'public-key', alg: -38},
+      {type: 'public-key', alg: -39},
+      {type: 'public-key', alg: -65535},
+      {type: 'public-key', alg: -261},
+      {type: 'public-key', alg: -260},
     ];
     const options = {
       challenge,
@@ -45,7 +75,8 @@ const RegisterCredentialScreen = () => {
     };
 
     try {
-      const result = await TrustKeyApiBridge.makeCredential_CTAP_Log(options);
+      await TrustKeyApiBridge.preMakeCredentialProcess();
+      const result = await TrustKeyApiBridge.postMakeCredentialProcess(options);
       setRegisterResult(result);
       Alert.alert('Success', 'Credential registered successfully!');
     } catch (error) {

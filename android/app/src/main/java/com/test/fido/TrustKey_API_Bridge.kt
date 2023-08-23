@@ -265,6 +265,133 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
         }
     }
 
+
+    // @ReactMethod
+    // fun preMakeCredentialProcess ()
+    // {
+    //     m_TrustKey_API_Bridge.TKAuthN_GetDeviceHandle()
+
+    //     GlobalScope.launch(Dispatchers.IO)
+    //     {
+    //         val urlPath = "https://demo.trustkeysolutions.com:12001/FidoDemo/demoDeveloper/fidoRegRequest.jsp"
+    //         val url = URL(urlPath)
+    //         val connection = url.openConnection() as HttpsURLConnection
+    //         connection.requestMethod = "POST"
+    //         connection.doOutput = true
+    //         val nonJsonString = "name=$m_userID_Registration&displayName=psjewbm.com&deviceId=&options=true&attachment=Cross_Platform&residentKey=true&userVerification=Preferred&attestation=Direct"
+    //         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+    //         connection.setRequestProperty("Accept", "text*/*")
+    //         connection.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0;* Windows NT)")
+    //         connection.setRequestProperty("Content-Length", nonJsonString.length.toString())
+
+    //         try {
+    //             (connection.apply {
+    //                 sslSocketFactory = createSocketFactory(listOf("TLSv1.2"))
+    //                 hostnameVerifier = HostnameVerifier { _, _ -> true }
+    //                 readTimeout = 5_000
+    //             })
+
+    //             DataOutputStream(connection.outputStream).use { it.writeBytes(URLDecoder.decode(nonJsonString, Charsets.UTF_8)) }
+
+    //             val code = connection.responseCode
+    //             Log.d("trustkey", code.toString())
+
+    //             val streamReader = InputStreamReader(connection.inputStream)
+    //             val buffered = BufferedReader(streamReader)
+    //             val response = buffered.readText()
+
+    //             Log.d("trustkey", response)
+
+    //             if ( m_TrustKey_API_Bridge.TKAuthN_Fido_MakeCredential(response) )
+    //             {
+    //                 Log.d("trustkey", m_TrustKey_API_Bridge.m_makeCredential_CTAP_Result.toString())
+
+    //                 postMakeCredentialProcess(m_TrustKey_API_Bridge.m_makeCredential_CTAP_Result)
+    //                 val params = WritableNativeMap()
+    //                 params.putString("status pre make", "success")
+    //                 sendEvent("MakeCredentialResult", params)
+    //             }
+    //             else
+    //             {
+    //                 launch (Dispatchers.Main)
+    //                 {
+    //                     m_TrustKey_API_Bridge.makeCredential_CTAP_Log()
+    //                     val params = WritableNativeMap()
+    //                     params.putString("status pre make", "failed")
+    //                     sendEvent("MakeCredentialResult", params)
+    //                 }
+    //             }
+
+    //         } catch (e: Exception) {
+    //             e.printStackTrace()
+    //         }
+
+    //     }
+    // }
+    // @ReactMethod
+    // fun postMakeCredentialProcess (pszCredential : ByteArray)
+    // {
+    //     GlobalScope.launch(Dispatchers.IO)
+    //     {
+    //         val urlPath = "https://demo.trustkeysolutions.com:12001/FidoDemo/demoDeveloper/fidoRegProc.jsp"
+    //         val url = URL(urlPath)
+    //         val connection = url.openConnection() as HttpsURLConnection
+    //         connection.requestMethod = "POST"
+    //         connection.doOutput = true
+    //         val credentialString = String(m_TrustKey_API_Bridge.m_makeCredential_CTAP_Result)
+    //         val nonJsonString = "publicKeyCredential=$credentialString"
+    //         connection.setRequestProperty(
+    //             "Content-Type",
+    //             "application/x-www-form-urlencoded; charset=UTF-8"
+    //         )
+    //         connection.setRequestProperty("Accept", "text*/*")
+    //         connection.setRequestProperty(
+    //             "User-Agent",
+    //             "Mozilla/4.0 (compatible; MSIE 5.0;* Windows NT)"
+    //         )
+    //         connection.setRequestProperty("Content-Length", nonJsonString.length.toString())
+    //         try {
+    //             (connection.apply {
+    //                 sslSocketFactory = createSocketFactory(listOf("TLSv1.2"))
+    //                 hostnameVerifier = HostnameVerifier { _, _ -> true }
+    //                 readTimeout = 5_000
+    //             })
+
+    //             DataOutputStream(connection.outputStream).use { it.writeBytes(nonJsonString) }
+
+    //             val code = connection.responseCode
+    //             Log.d("trustkey", code.toString())
+
+    //             val streamReader = InputStreamReader(connection.inputStream)
+    //             val buffered = BufferedReader(streamReader)
+    //             val  response = buffered.readText()
+
+    //             Log.d("trustkey", response)
+
+    //             launch (Dispatchers.Main)
+    //             {
+    //                 //m_TrustKey_API_Bridge.makeCredential_CTAP_Log()
+
+    //                 if ( response.contains("1200") ){
+    //                 val params = WritableNativeMap()
+    //                 params.putString("status post make", "success")
+    //                 sendEvent("MakeCredentialResult", params)
+    //                 }
+    //                 else{   
+    //                 val params = WritableNativeMap()
+    //                 params.putString("status post make", "failed")
+    //                 sendEvent("MakeCredentialResult", params)
+    //                 }
+
+    //             }
+
+
+    //         } catch (e: Exception) {
+    //             e.printStackTrace()
+    //         }
+    //     }
+    // }
+
     fun makeCredential_CTAP_Log()
     {
         Log.d("trustkey", "[Credential Attestation] dwVersion = " + m_webAuthNCredentialAttestation.m_dwVersion.toString())

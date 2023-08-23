@@ -11,7 +11,8 @@ class FidoServiceManager(reactContext: ReactApplicationContext) : ReactContextBa
     private external fun stringFromJNI() : String
 
 
-    @ReactMethod fun createFidoEvent(name: String, location: String) {
+    @ReactMethod 
+    fun createFidoEvent(name: String, location: String) {
         Log.d("FidoModule", "Event called with $name & $location")
     }
 }
