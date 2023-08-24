@@ -265,6 +265,15 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
         }
     }
 
+    @ReactMethod
+    fun getDeviceHandle(promise: Promise) {
+    try {
+        val deviceHandle = TKAuthN_GetDeviceHandle() 
+        promise.resolve(deviceHandle) 
+    } catch (e: Exception) {
+        promise.reject("E_ERROR", e.message)
+    }
+}
 
     fun makeCredential_CTAP_Log()
     {
@@ -507,7 +516,6 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
 
     /*  주요 환경변수들 예) URL 주소 등등을 라이브러리로 전달합니다 */
     external fun setEnvironmentData()
-    @ReactMethod
     external fun TKAuthN_GetDeviceHandle() : String
     external fun TKAuthN_Fido_GetAssertion( jsonValue : String ) : Boolean
     external fun TKAuthN_Fido_MakeCredential( jsonValue: String ) : Boolean

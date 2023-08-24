@@ -27,7 +27,7 @@ const FidoModuleButton = () => {
       );
     }
   };
-  const Register = async () => {
+  const makeCredentialCTAPLog = async () => {
     try {
       const credential = await TrustKeyApiBridge.makeCredentialCTAPLog();
       Alert.alert('success', credential);
@@ -101,7 +101,7 @@ const FidoModuleButton = () => {
 
   const preMakeCredentialProcess = async () => {
     try {
-      await TrustKeyApiBridge.TKAuthN_GetDeviceHandle();
+      await TrustKeyApiBridge.getDeviceHandle();
 
       const urlPath =
         'https://demo.trustkeysolutions.com:12001/FidoDemo/demoDeveloper/fidoRegRequest.jsp';
@@ -112,7 +112,7 @@ const FidoModuleButton = () => {
 
       const headers = {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        Accept: 'text/*',
+        Accept: 'application/json',
         'User-Agent': 'Mozilla/4.0 (compatible; MSIE 5.0;* Windows NT)',
       };
 
@@ -171,7 +171,7 @@ const FidoModuleButton = () => {
         onPress={InitilizeFidoDevice}
       />
 
-      <Button title="Register" color="brown" onPress={Register} />
+      <Button title="Register" color="brown" onPress={makeCredentialCTAPLog} />
       <View style={{padding: 10, gap: 10}}>
         <TextInput
           style={{
