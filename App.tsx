@@ -8,7 +8,7 @@ function App(): JSX.Element {
   return (
     <SafeAreaView>
       <FidoModuleButton />
-      <RegisterCredentialScreen />
+      {/* <RegisterCredentialScreen /> */}
     </SafeAreaView>
   );
 }
