@@ -197,7 +197,7 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
 
     @ReactMethod
     fun initFidoDevice(name: String, location: String) {
-        Log.d("FidoModule", "Init called with: $name")
+        Log.d("FidoModule", "Init called with $name & $location")
         try {
             initFidoLibrary()
         } catch (npe : NullPointerException) {
@@ -273,7 +273,30 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
     } catch (e: Exception) {
         promise.reject("E_ERROR", e.message)
     }
-}
+    }
+    @ReactMethod
+    fun getMakeCredential(jsonValue: String, promise: Promise) {
+    try {
+        val makeCredentials = TKAuthN_Fido_MakeCredential(jsonValue) 
+        promise.resolve(makeCredentials) 
+    } catch (e: Exception) {
+        promise.reject("E_ERROR", e.message)
+    }
+    }
+
+    // @ReactMethod
+    // fun getMakeCredentialCTAPResult(promise: Promise) {
+    //     // Assuming m_makeCredential_CTAP_Result is defined in your native module
+    //     byte[] resultBytes = m_makeCredential_CTAP_Result;
+        
+    //     // Convert the byte array to a writable array for JavaScript
+    //     WritableArray resultArray = Arguments.createArray();
+    //     for (byte b : resultBytes) {
+    //         resultArray.pushInt(b & 0xFF);
+    //     }
+
+    //     promise.resolve(resultArray);
+    // }
 
     fun makeCredential_CTAP_Log()
     {
