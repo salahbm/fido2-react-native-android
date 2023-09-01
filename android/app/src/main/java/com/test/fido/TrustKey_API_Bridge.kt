@@ -108,7 +108,7 @@ class WebAuthNCredentialAttestation (
     var m_dwUsedTransport : Long = 0
 )
 
-class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext)  {
+class TrustKey_API_Bridge  {
 
     lateinit var m_callerContext: Context
     val m_device_custom_info : MutableList<EachDeviceRef> = ArrayList()
@@ -147,91 +147,15 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
     private lateinit var m_baseResult : BaseResultType
     private lateinit var m_userInfoResult : UserInfoResultType
 
-    override fun getName() = "TrustKeyApiBridge"
-
     private val ACTION_USB_PERMISSION = "com.test.USB_PERMISSION"
     private val TAG = "ReactNative"
 
     private var connectionPromise: Promise? = null
 
-    fun initFidoLibrary() {
-        Log.d("FidoModule", "Load Trustkey Library...")
-        System.loadLibrary("trustkey_android_api")
-//        if (!libLoaded) {
-//            libLoaded = FidoLibLoader.LoadLib()
-//        }
-//        if (libLoaded) {
-//            jniLoader = FidoLibLoader()
-//        }
-    }
-
-    private fun getUsbManager(): UsbManager {
-        val rAppContext = reactApplicationContext
-        return rAppContext.getSystemService(Context.USB_SERVICE) as UsbManager
-    }
-
-    private val usbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val action = intent.action
-            Log.d("TKAuthN", "onReceive!!!")
-            if (ACTION_USB_PERMISSION == intent.action) {
-                synchronized(this) {
-                    val device: UsbDevice? = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
-
-                    if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                        device?.apply {
-                        }
-                    } else {
-                        Log.d("TKAuthN", "permission denied for device $device")
-                    }
-                }
-            }
-        }
-    }
-
     private fun rejectConnectionPromise(code: String, message: String) {
         Log.e(TAG, message)
         connectionPromise?.reject(code, message)
         connectionPromise = null
-    }
-
-    @ReactMethod
-    fun initFidoDevice(name: String, location: String) {
-        Log.d("FidoModule", "Init called with $name & $location")
-        try {
-            initFidoLibrary()
-        } catch (npe : NullPointerException) {
-            rejectConnectionPromise("E110", "No USB devices found!!")
-        }
-
-        Log.d("FidoModule", "Try to init settings...")
-        m_usbManager = getUsbManager()
-        m_deviceList = m_usbManager.deviceList
-        Log.d("FidoModule", m_deviceList.toString())
-
-        initSetting()
-
-        Log.d("FidoModule", "GetBroadCast!!!!")
-        val permissionIntent =
-            PendingIntent.getBroadcast(reactApplicationContext, 0, Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE)
-
-        val filter = IntentFilter(ACTION_USB_PERMISSION)
-        reactApplicationContext.registerReceiver(usbReceiver, filter)
-        val deviceIterator: Iterator<UsbDevice> = m_deviceList.values.iterator()
-
-        var idx  = 0
-        while (deviceIterator.hasNext()) {
-
-            val _device = deviceIterator.next()
-            m_usbManager.requestPermission(_device, permissionIntent)
-            idx++
-        }
-        Log.d("FidoModule", "END init fido device...")
-    }
-
-    @ReactMethod
-    fun makeCredentialCTAPLog() {
-        makeCredential_CTAP_Log()
     }
 
     fun initSetting () {
@@ -240,48 +164,13 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
         m_environment_rpID = m_environment_rpID.substringBefore(":")
 
 
-        send_ContextToModule() //<-- Error Occur
+        send_ContextToModule()
+        setEnvironmentData()
 
         /* =================  아래의 함수에서 각종 클래스들의 초기화를 진행합니다 ============= */
         Log.d(TAG, "class initialization...")
         classInitialization()
         /* =========================================================================== */
-    }
-
-    @ReactMethod
-    fun disconnect(promise: Promise) {
-        try {
-            if (m_connection == null) {
-                val error = "No USB connection established"
-                Log.e(TAG, error)
-                promise.reject("E400", error)
-            } else {
-                m_connection.close()
-                promise.resolve(null)
-            }
-        } catch (e : Exception) {
-            e.printStackTrace()
-            promise.reject("E401", "m_connection has not been initialized")
-        }
-    }
-
-    @ReactMethod
-    fun getDeviceHandle(promise: Promise) {
-    try {
-        val deviceHandle = TKAuthN_GetDeviceHandle() 
-        promise.resolve(deviceHandle) 
-    } catch (e: Exception) {
-        promise.reject("E_ERROR", e.message)
-    }
-    }
-    @ReactMethod
-    fun getMakeCredential(jsonValue: String, promise: Promise) {
-    try {
-        val makeCredentials = TKAuthN_Fido_MakeCredential(jsonValue) 
-        promise.resolve(makeCredentials) 
-    } catch (e: Exception) {
-        promise.reject("E_ERROR", e.message)
-    }
     }
 
     // @ReactMethod
@@ -526,6 +415,10 @@ class TrustKey_API_Bridge(reactContext: ReactApplicationContext) : ReactContextB
         send_HID_ReceivedDataToModule(readData, readLength)
 
         return dataReceivedNum
+    }
+
+    init {
+        Log.d(TAG, "Creating TrustKey Api Bridge class!!")
     }
 
     companion object

@@ -175,10 +175,8 @@ class TrustKeyApiBridge(reactContext: ReactApplicationContext) : ReactContextBas
     private lateinit var m_baseResult : BaseResultType
     private lateinit var m_userInfoResult : UserInfoResultType
 
-    override fun getName() = "TrustKeyApiBridge"
-
     private val ACTION_USB_PERMISSION = "com.test.USB_PERMISSION"
-    private val TAG = "ReactNative"
+    private val TAG = "FidoServiceManager"
 
     private var connectionPromise: Promise? = null
 
@@ -526,5 +524,10 @@ class TrustKeyApiBridge(reactContext: ReactApplicationContext) : ReactContextBas
 
     companion object
     {
+    }
+
+    override fun getName(): String {
+        TODO("Not yet implemented")
+        return "TRR"
     }
 }
