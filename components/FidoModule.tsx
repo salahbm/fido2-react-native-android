@@ -13,18 +13,24 @@ import {Buffer} from 'buffer';
 const {TrustKeyApiBridge} = NativeModules;
 
 const FidoModuleButton = () => {
-  const [registerResult, setRegisterResult] = useState('');
+  const [registerResult, setRegisterResult] = useState<any>('');
   const [name, setName] = useState('');
-  // usbDetect.startMonitoring();
 
-  // Detect add/insert
-  // usbDetect.on('add', function (device) {
-  //   Alert.alert('add', JSON.stringify(device));
-  // });
   const InitilizeFidoDevice = async () => {
     await TrustKeyApiBridge.initFidoDevice('testName', 'testLocation');
   };
-
+  const makeHttpsRequest = async () => {
+    try {
+      const response = await axios.get('https://example.com');
+      // Handle the response data here
+      console.log(response.data);
+      Alert.alert('Response Data', JSON.stringify(response.data));
+    } catch (error) {
+      // Handle errors
+      console.error('Error:', error);
+      Alert.alert('Error', 'Failed to fetch data from the server.');
+    }
+  };
   const generateUniqueString = (length: number) => {
     const characters =
       'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -67,32 +73,23 @@ const FidoModuleButton = () => {
       user,
       rp,
       pubKeyCredParams,
-      attestation: 'none',
+      attestation: 'direct',
       authenticatorSelection: {
         authenticatorAttachment: 'cross-platform',
         userVerification: 'preferred',
       },
       timeout: 60000,
       excludeCredentials: [],
+      statusCode: '1200',
     };
-
-    try {
-      await TrustKeyApiBridge.preMakeCredentialProcess();
-      const result = await TrustKeyApiBridge.postMakeCredentialProcess(options);
-      setRegisterResult(result);
-      Alert.alert('Success', 'Credential registered successfully!');
-    } catch (error) {
-      console.error('Credential registration error:', error);
-      Alert.alert('Error', 'An error occurred during credential registration.');
-    }
+    return options;
   };
-
+  const options = registerCredential();
   const preMakeCredentialProcess = async () => {
     try {
       try {
         await TrustKeyApiBridge.makeCredentialCTAPLog();
         await TrustKeyApiBridge.getDeviceHandle();
-        Alert.alert('device handle done');
       } catch (error) {
         console.log('error in device handle');
       }
@@ -112,12 +109,14 @@ const FidoModuleButton = () => {
       const headersAsString = JSON.stringify(headers, null, 2);
 
       Alert.alert(' Headers', headersAsString);
+      // stops working after this line
       const response = await axios.post(urlPath, formData.toString(), {
         headers,
       });
       Alert.alert('step 1');
 
       const success = await TrustKeyApiBridge.getMakeCredential(response.data);
+      // const success = await TrustKeyApiBridge.getMakeCredential(options);
       Alert.alert('step 2');
       if (success) {
         const resultArray =
@@ -150,7 +149,7 @@ const FidoModuleButton = () => {
       const response = await axios.post(urlPath, formData.toString(), {
         headers,
       });
-
+      setRegisterResult(response);
       if (response.data.includes('1200')) {
         Alert.alert('success');
       } else {
@@ -168,6 +167,8 @@ const FidoModuleButton = () => {
         color="green"
         onPress={InitilizeFidoDevice}
       />
+      <Button title=" Testing" color="blue" onPress={registerCredential} />
+      <Button title=" https" color="blue" onPress={makeHttpsRequest} />
 
       <View style={{padding: 10, gap: 10}}>
         <TextInput
@@ -186,7 +187,7 @@ const FidoModuleButton = () => {
           onPress={preMakeCredentialProcess}
           disabled={!name}
         />
-        <Text dataDetectorType={'email'}>{registerResult}</Text>
+        <Text dataDetectorType={'all'}>{registerResult}</Text>
       </View>
     </SafeAreaView>
   );
